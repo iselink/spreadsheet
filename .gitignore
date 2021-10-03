@@ -1,7 +1,4 @@
 /.vscode
-/Makefile
-/main.d
-/memory.d
+/*.d
 /obj
-/sheet.d
 /spreadsheet

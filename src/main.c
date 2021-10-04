@@ -1,15 +1,26 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include <locale.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "memory.h"
 #include "sheet.h"
+#include "ui.h"
 
 int main(int argc, char **argv) {
-	//initiateSheet(4096, 4096);
-	initiateSheet(1, 40);
+	setlocale(LC_ALL, NULL);
+
+	initiateSheet(64, 64);
 	setCursor(0, 0);
-	setCellValue("A1");
-	sheetDebugDump();
+
+	uiInitiate();
+	uiRefreshScreen();
+	while (!uiShouldClose()) {
+		uiHandleInput();
+		uiRefreshScreen();
+	}
+
+	uiDispose();
+
 	disposeSheet();
 }

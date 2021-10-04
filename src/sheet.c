@@ -77,7 +77,7 @@ void setCellValue(const char *text) {
 }
 char *getCellValue() {
 	if (!isCursorPositionValid()) {
-		return;
+		return NULL;
 	}
 
 	int index = g_cursor_x + (g_cursor_y * g_cols_count);

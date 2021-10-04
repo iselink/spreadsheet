@@ -12,7 +12,7 @@ void disposeSheet();
 
 void setCursor(int row, int col);
 void setCellValue(const char *text);
-char *getCellValue();
+const char *getCellValue();
 int isCursorPositionValid();
 void sheetTranslateColToLetter(int col, int text_size, char *text);
 

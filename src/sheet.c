@@ -33,7 +33,7 @@ void disposeSheet() {
 			continue;
 		//TODO: dealocate cells
 		if (g_cells[i]->text != NULL) {
-			free(g_cells[i]->text);
+			free((void *) g_cells[i]->text);
 		}
 		free(g_cells[i]);
 	}
@@ -73,9 +73,9 @@ void setCellValue(const char *text) {
 		g_cells[index]->textLenght = textLen;
 	}
 
-	strcpy(g_cells[index]->text, text);
+	strcpy((char *) g_cells[index]->text, text);
 }
-char *getCellValue() {
+const char *getCellValue() {
 	if (!isCursorPositionValid()) {
 		return NULL;
 	}

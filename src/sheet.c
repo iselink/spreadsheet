@@ -130,13 +130,13 @@ int setCellValue(const char *text) {
  * Return cell's value if given cell have some.
  * Otherwise return null.
  */
-const char *getCellValue() {
-	if (!isCursorPositionValid()) {
-		return NULL;
-	}
-
-	int index = g_cursor_x + (g_cursor_y * g_cols_count);
+const char *getCellValueAt(int x, int y) {
+	int index = x + (y * g_cols_count);
 	return g_cells[index] != NULL ? g_cells[index]->text : NULL;
+}
+
+const char *getCellValue() {
+	return getCellValueAt(g_cursor_x, g_cursor_y);
 }
 
 /**

@@ -12,6 +12,11 @@ int main(int argc, char **argv) {
 
 	initiateSheet(64, 64);
 	setCursor(0, 0);
+	setCellValue("Bruuh");
+	setCursor(1, 0);
+	setCellValue("12345678901234567");
+	setCursor(2, 2);
+	setCellValue("xad");
 
 	uiInitiate();
 	uiRefreshScreen();

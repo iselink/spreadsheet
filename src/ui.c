@@ -117,27 +117,26 @@ void uiRefreshScreen() {
 	wclear(g_winSheet);
 
 	//draw sheet
-	int viewX = getViewX();
-	int viewY = getViewY();
-
-	int cellXFullOffset = viewX / 16;
-	int offsetX = viewX % 16;
-
-	for (int i = 0; i < 8; i += 2) {
-		int cx = 0;
-		for (int c = 0; c < COLS; c++) {
-			mvwaddch(g_winSheet, i, c, cx > 15 ? ACS_PLUS : ACS_HLINE);
-			cx++;
-			if (cx > 16) {
-				cx = 0;
+	for (int x = getViewX(); x < 10; x++) {
+		for (int y = getViewY(); y < 10; y++) {
+			int realCol = x * 16;
+			int realRow = y;
+			const char *value = getCellValueAt(x, y);
+			if (value != NULL) {
+				mvwaddnstr(g_winSheet, realRow, realCol, value, 16);
 			}
+
 		}
 	}
+
+	wmove(g_winSheet, getCursorPositionY(), getCursorPositionX() * 16);
 
 	refresh();
 	wrefresh(g_winHeader);
 	wrefresh(g_winHeaderCellEntry);
 	wrefresh(g_winSheet);
+
+
 }
 
 int uiShouldClose() {

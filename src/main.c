@@ -16,8 +16,8 @@ int main(int argc, char **argv) {
 	uiInitiate();
 	uiRefreshScreen();
 	while (!uiShouldClose()) {
-		uiHandleInput();
 		uiRefreshScreen();
+		uiHandleInput();
 	}
 
 	uiDispose();

@@ -10,6 +10,9 @@ int g_cols_count = -1;
 int g_cursor_x = -1;
 int g_cursor_y = -1;
 
+int g_view_x = 0;
+int g_view_y = 0;
+
 Cell **g_cells = NULL;
 
 void initiateSheet(int rows, int cols) {
@@ -110,6 +113,31 @@ void sheetTranslateColToLetter(int col, int text_size, char *text) {
 			}
 		}
 	}
+}
+
+int getCursorPositionX() {
+	return g_cursor_x;
+}
+
+int getCursorPositionY() {
+	return g_cursor_y;
+}
+
+int isSheetAvailable() {
+	return g_cells != NULL;
+}
+
+int getViewX() {
+	return g_view_x;
+}
+
+int getViewY() {
+	return g_view_y;
+}
+
+void setViewPosition(int x, int y) {
+	g_view_x = x;
+	g_view_y = y;
 }
 
 void sheetDebugDump() {

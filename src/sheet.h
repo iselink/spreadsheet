@@ -7,11 +7,11 @@ typedef struct Cell_ {
 	int textLenght;
 } Cell;
 
-void initiateSheet(int rows, int cols);
+int initiateSheet(int rows, int cols);
 void disposeSheet();
 
 void setCursor(int row, int col);
-void setCellValue(const char *text);
+int setCellValue(const char *text);
 const char *getCellValue();
 int isCursorPositionValid();
 void sheetTranslateColToLetter(int col, int text_size, char *text);

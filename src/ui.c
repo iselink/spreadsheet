@@ -1,3 +1,6 @@
+/**
+ * All TUI releated functions.
+**/
 #include "ui.h"
 
 #include <ncursesw/ncurses.h>
@@ -19,11 +22,15 @@ WINDOW *g_winSheet = NULL;
 //close flag; indicate user's request to close program
 int g_close = 0;
 
+//size of the header part
+int g_headerSize = 3;
+
 //////////////////////////////////////////////////
 
 /**
  * initiate NCURSESW library.
 **/
+//TODO: init error handling
 void uiInitiate() {
 	g_window = initscr();
 
@@ -39,20 +46,27 @@ void uiInitiate() {
 	keypad(stdscr, TRUE);
 	raw();
 
-	//size of the header part
-	int headerSize = 3;
-	g_winHeader = newwin(headerSize, COLS, 0, 0);
+	g_winHeader = newwin(g_headerSize, COLS, 0, 0);
 	g_winHeaderCellEntry = subwin(g_winHeader, 1, 16, 1, 1);
-	g_winSheet = newwin(LINES - headerSize, COLS, headerSize, 0);
+	g_winSheet = newwin(LINES - g_headerSize, COLS, g_headerSize, 0);
 }
 
+/**
+ * Release all resources taken by curses library.
+**/
 void uiDispose() {
 	delwin(g_winHeaderCellEntry);
 	delwin(g_winHeader);
 	delwin(g_winSheet);
+	g_winHeaderCellEntry = NULL;
+	g_winHeader = NULL;
+	g_winSheet = NULL;
 	endwin();
 }
 
+/**
+ * Handle key presses.
+**/
 void uiHandleInput() {
 	switch (getch()) {
 		case KEY_F(10):
@@ -124,7 +138,6 @@ void uiRefreshScreen() {
 	wrefresh(g_winHeader);
 	wrefresh(g_winHeaderCellEntry);
 	wrefresh(g_winSheet);
-
 }
 
 int uiShouldClose() {

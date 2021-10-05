@@ -1,3 +1,6 @@
+/**
+ * Functions releated to the sheet manipulation. 
+**/
 #include "sheet.h"
 
 #include <stdio.h>
@@ -15,14 +18,24 @@ int g_view_y = 0;
 
 Cell **g_cells = NULL;
 
-void initiateSheet(int rows, int cols) {
+/**
+ * Allocate memory for new sheet.
+ * If error occured while memory allocation, then 1 is returned.
+**/
+int initiateSheet(int rows, int cols) {
 	g_row_count = rows;
 	g_cols_count = cols;
 	g_cells = (Cell **)malloc(sizeof(Cell *) * cols * rows);
-	//TODO: error memory allocation handle
+	if (g_cells == NULL) {
+		return 1;
+	}
 	memset(g_cells, 0, sizeof(Cell *) * cols * rows);
+	return 0;
 }
 
+/**
+ * Release all of the memory allocated by the sheet.
+**/
 void disposeSheet() {
 	if (g_cells == NULL) {
 		return;
@@ -30,13 +43,17 @@ void disposeSheet() {
 
 	g_cursor_x = -1;
 	g_cursor_y = -1;
+	g_cols_count = -1;
+	g_row_count = -1;
+	g_view_x = -1;
+	g_view_y = -1;
 
 	for (int i = 0; i < g_cols_count * g_row_count; i++) {
 		if (g_cells[i] == NULL)
 			continue;
-		//TODO: dealocate cells
+
 		if (g_cells[i]->text != NULL) {
-			free((void *) g_cells[i]->text);
+			free((void *)g_cells[i]->text);
 		}
 		free(g_cells[i]);
 	}
@@ -45,6 +62,10 @@ void disposeSheet() {
 	g_cells = NULL;
 }
 
+/**
+ * Set cursor to the given cell.
+ * If position is out of bound, then cursor is set to the nearest cell.
+**/
 void setCursor(int row, int col) {
 	if (row < 0) {
 		g_cursor_y = 0;
@@ -62,22 +83,53 @@ void setCursor(int row, int col) {
 		g_cursor_x = col;
 	}
 }
-void setCellValue(const char *text) {
+
+/**
+ * Set cell's value by parameter.
+ * If NULL is passed, then cell is cleared.
+ * Cell is select via cursor.
+ */
+//TODO: reset cell's value if text is null.
+int setCellValue(const char *text) {
 	if (!isCursorPositionValid())
-		return;
+		return 1;
 
 	int index = g_cursor_x + (g_cursor_y * g_cols_count);
 	//TODO: boundary check
+
+	//if cell isn't allocated, then allocate it
 	if (g_cells[index] == NULL) {
 		g_cells[index] = (Cell *)malloc(sizeof(Cell));
-		int textLen = strlen(text);
-		g_cells[index]->text = (const char *)malloc(sizeof(const char) * textLen);
-		//TODO: memory allocation check
-		g_cells[index]->textLenght = textLen;
+		if (g_cells[index] == NULL) {
+			return 1;
+		}
 	}
 
-	strcpy((char *) g_cells[index]->text, text);
+	if (text != NULL) {
+		//set cell's value
+		int textLen = strlen(text);
+		g_cells[index]->text = (const char *)malloc(sizeof(const char) * textLen);
+		if (g_cells[index]->text == NULL) {
+			return 1;
+		}
+
+		g_cells[index]->textLenght = textLen;
+		strcpy((char *)g_cells[index]->text, text);
+
+	} else {
+		//reset cell's value
+		g_cells[index]->textLenght = 0;
+		free((void *)g_cells[index]->text);
+		g_cells[index]->text = NULL;
+	}
+
+	return 0;
 }
+
+/**
+ * Return cell's value if given cell have some.
+ * Otherwise return null.
+ */
 const char *getCellValue() {
 	if (!isCursorPositionValid()) {
 		return NULL;
@@ -87,10 +139,16 @@ const char *getCellValue() {
 	return g_cells[index] != NULL ? g_cells[index]->text : NULL;
 }
 
+/**
+ * Check if cursor position is in sheet boundary.
+ */
 int isCursorPositionValid() {
 	return g_cursor_x >= 0 && g_cursor_y >= 0 && g_cursor_x <= g_cols_count && g_cursor_y <= g_row_count;
 }
 
+/**
+ * Translate collumn number into letter as is common it other spreadsheet SW.
+ */
 void sheetTranslateColToLetter(int col, int text_size, char *text) {
 	if (col < 0 || text_size <= 0 || text == NULL) {
 		return;	 //TODO: error check for parameters and so on...
@@ -115,31 +173,52 @@ void sheetTranslateColToLetter(int col, int text_size, char *text) {
 	}
 }
 
+/**
+ * Return X position of the cursor.
+ */
 int getCursorPositionX() {
 	return g_cursor_x;
 }
 
+/**
+ * Return Y position of the cursor.
+ */
 int getCursorPositionY() {
 	return g_cursor_y;
 }
 
+/**
+ * Check if sheet is available (i.e. allocated) so it is safe to use sheet-releated functions.
+ */
 int isSheetAvailable() {
 	return g_cells != NULL;
 }
 
+/**
+ * return X coord of the viewport.
+ */
 int getViewX() {
 	return g_view_x;
 }
 
+/**
+ * return Y coord of the viewport.
+ */
 int getViewY() {
 	return g_view_y;
 }
 
+/**
+ * Set position of the viewport to the X,Y position.
+**/
 void setViewPosition(int x, int y) {
 	g_view_x = x;
 	g_view_y = y;
 }
 
+/**
+ * dump sheet and some other info to the stdout.
+**/
 void sheetDebugDump() {
 	printf("Spreadsheet debug dump\n");
 	if (g_cells == NULL) {

@@ -131,7 +131,12 @@ int setCellValue(const char *text) {
  * Otherwise return null.
  */
 const char *getCellValueAt(int x, int y) {
+	if (g_cells == NULL)
+		return NULL;
 	int index = x + (y * g_cols_count);
+	if (index > g_cols_count * g_row_count) {
+		return NULL;
+	}
 	return g_cells[index] != NULL ? g_cells[index]->text : NULL;
 }
 

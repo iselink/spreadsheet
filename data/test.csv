@@ -1,0 +1,7 @@
+Ping function, Pin number
+3V Power,1
+5V Power,2
+GPIO 2 (SDA),3
+5V Power,4
+GPIO 3 (SCL),5
+Ground,6

@@ -123,9 +123,11 @@ void uiRefreshScreen() {
 			int realRow = y;
 			const char *value = getCellValueAt(x, y);
 			if (value != NULL) {
+				attr_t attr = getCursorPositionX() == x && getCursorPositionY() == y ? A_REVERSE : 0;
+				wattron(g_winSheet, attr);
 				mvwaddnstr(g_winSheet, realRow, realCol, value, 16);
+				wattroff(g_winSheet, attr);
 			}
-
 		}
 	}
 
@@ -135,8 +137,6 @@ void uiRefreshScreen() {
 	wrefresh(g_winHeader);
 	wrefresh(g_winHeaderCellEntry);
 	wrefresh(g_winSheet);
-
-
 }
 
 int uiShouldClose() {

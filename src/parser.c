@@ -48,7 +48,9 @@ int loadFile(const char *filename) {
 		}
 	}
 
-	if (initiateSheet(rowCount, colCount)) {
+	//FIXME: must be bigger than actual table for correct addressing.
+	//if (initiateSheet(rowCount, colCount)) {
+	if (initiateSheet(1024, 1024)) {
 		fclose(g_file_src);
 		g_file_src = NULL;
 		return 1;
@@ -66,7 +68,7 @@ int loadFile(const char *filename) {
 	int cellCol = 0;
 	int buffIndex = 0;
 	memset(line, 0, sizeof(char) * 256);
-	while ((c = fgetc(g_file_src)) != EOF) {
+	for (c = fgetc(g_file_src);; c = fgetc(g_file_src)) {
 		switch (c) {
 			case ',': {
 				setCursor(cellRow, cellCol);
@@ -76,6 +78,7 @@ int loadFile(const char *filename) {
 				cellCol++;
 				break;
 			}
+			case EOF:
 			case '\n': {
 				setCursor(cellRow, cellCol);
 				setCellValue(line);
@@ -90,6 +93,9 @@ int loadFile(const char *filename) {
 				line[buffIndex++] = c;
 				break;
 			}
+		}
+		if (c == EOF) {
+			break;
 		}
 	}
 

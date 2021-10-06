@@ -133,6 +133,7 @@ int setCellValue(const char *text) {
 const char *getCellValueAt(int x, int y) {
 	if (g_cells == NULL)
 		return NULL;
+		
 	int index = x + (y * g_cols_count);
 	if (index > g_cols_count * g_row_count) {
 		return NULL;
@@ -238,10 +239,12 @@ void sheetDebugDump() {
 		for (int y = 0; y < g_row_count; y++) {
 			int index = x + (y * g_cols_count);
 			Cell *cell = g_cells[index];
-			char letterCol[11];
-			memset(letterCol, '\0', sizeof(char) * 11);
-			sheetTranslateColToLetter(x, 11, letterCol);
-			printf("[%4i][%4i]\t(%i%s): %s\n", x, y, x, letterCol, cell != NULL ? cell->text : "(null)");
+			if (cell != NULL && cell->text != NULL) {
+				char letterCol[11];
+				memset(letterCol, '\0', sizeof(char) * 11);
+				sheetTranslateColToLetter(x, 11, letterCol);
+					printf("[%4i][%4i]\t(%i%s): %s\n", x, y, x, letterCol, cell != NULL ? cell->text : "(null)");
+			}
 		}
 	}
 }

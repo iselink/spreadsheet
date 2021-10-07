@@ -125,7 +125,13 @@ void uiRefreshScreen() {
 			if (value != NULL) {
 				attr_t attr = getCursorPositionX() == x && getCursorPositionY() == y ? A_REVERSE : 0;
 				wattron(g_winSheet, attr);
-				mvwaddnstr(g_winSheet, realRow, realCol, value, 16);
+				for (int i = 0; i < 16; i++) {
+					if (value[i] != '\0') {
+						mvwaddch(g_winSheet, realRow, realCol + i, value[i]);
+					} else {
+						mvwaddch(g_winSheet, realRow, realCol + i, ' ');
+					}
+				}
 				wattroff(g_winSheet, attr);
 			}
 		}

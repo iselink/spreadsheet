@@ -133,7 +133,7 @@ int setCellValue(const char *text) {
 const char *getCellValueAt(int x, int y) {
 	if (g_cells == NULL)
 		return NULL;
-		
+
 	int index = x + (y * g_cols_count);
 	if (index > g_cols_count * g_row_count) {
 		return NULL;
@@ -156,26 +156,25 @@ int isCursorPositionValid() {
  * Translate collumn number into letter as is common it other spreadsheet SW.
  */
 void sheetTranslateColToLetter(int col, int text_size, char *text) {
-	if (col < 0 || text_size <= 0 || text == NULL) {
-		return;	 //TODO: error check for parameters and so on...
+	if (col < 0 || text_size < 1 || text == NULL) {
+		return;	 //TODO: just do better error handling
 	}
+	memset(text, 0, sizeof(char) * text_size);
 
-	//it is so fucking late and my brain is dead inside
-	//TODO: do this better before it hurts me lol
-	text[0] = 'A';
-	for (int counter = 0; counter < col; counter++) {
-		for (int i = 0; i < text_size; i++) {
-			if (text[i] >= 'A')
-				text[i]++;
-			if (text[i] > 'Z') {
-				text[i] = 'A';
-				if (text[i + 1] == 0) {
-					text[i + 1] = 'A';
-				} else {
-					text[i + 1]++;
-				}
-			}
+	col++;
+
+	int dividend = col;
+	int i;
+	int modulo;
+	while (dividend > 0) {
+		modulo = (dividend - 1) % 26;
+		i = 65 + modulo;
+		//move all text a one place right
+		for (int i = text_size - 1; i >= 0; i--) {
+			text[i + 1] = text[i];
 		}
+		text[0] = (char)i;
+		dividend = (int)((dividend - modulo) / 26);
 	}
 }
 
@@ -243,7 +242,7 @@ void sheetDebugDump() {
 				char letterCol[11];
 				memset(letterCol, '\0', sizeof(char) * 11);
 				sheetTranslateColToLetter(x, 11, letterCol);
-					printf("[%4i][%4i]\t(%i%s): %s\n", x, y, x, letterCol, cell != NULL ? cell->text : "(null)");
+				printf("[%4i][%4i]\t(%i%s): %s\n", x, y, x, letterCol, cell != NULL ? cell->text : "(null)");
 			}
 		}
 	}
